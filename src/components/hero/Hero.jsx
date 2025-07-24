@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Button from '../ui/Button';
-// import ThreeJSDevices from './ThreeJSDevices';
+import ThreeJSDevices from './Devices';
 
 const Hero = () => {
   return (
@@ -14,7 +14,7 @@ const Hero = () => {
              }} />
       </div>
 
-      {/* <ThreeJSDevices /> */}
+      <ThreeJSDevices />
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
