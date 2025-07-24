@@ -14,10 +14,7 @@ const Hero = () => {
              }} />
       </div>
 
-      {/* Three.js 3D Devices */}
       {/* <ThreeJSDevices /> */}
-
-      {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
