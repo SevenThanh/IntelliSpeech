@@ -224,7 +224,7 @@ const Devices = () => {
   return (
     <div 
       ref={mountRef} 
-      className="absolute inset-0 pointer-events-none"
+      className="absolute inset-0 pointer-events-none md:block hidden"
       style={{ zIndex: 1 }}
     />
   );
