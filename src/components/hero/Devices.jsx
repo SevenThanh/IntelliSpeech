@@ -116,7 +116,7 @@ const Devices = () => {
         roughness: 0.8
       })
     );
-    keyboard.position.y = 0.06; //
+    keyboard.position.y = 0.06;
     laptopGroup.add(keyboard);
 
     const trackpad = new THREE.Mesh(
@@ -129,16 +129,23 @@ const Devices = () => {
     );
     trackpad.position.set(0, 0.06, 0.5); 
     laptopGroup.add(trackpad);
-
-    const spacing = window.innerWidth < 768 ? 3 : 6;
+    const isMobile = window.innerWidth < 768;
     
-    phoneGroup.position.set(-spacing, 0, 0);
-    phoneGroup.scale.set(1.2, 1.2, 1.2);
+    if (isMobile) {
+      phoneGroup.position.set(-3, -5, 0);
+      phoneGroup.scale.set(0.8, 0.8, 0.8);
+      laptopGroup.visible = false;
+    } else {
+      phoneGroup.position.set(-6, 0, 0);
+      phoneGroup.scale.set(1.2, 1.2, 1.2);
+      laptopGroup.position.set(6, -0.5, 0);
+      laptopGroup.scale.set(1.0, 1.0, 1.0);
+      laptopGroup.visible = true;
+    }
+    
     scene.add(phoneGroup);
-
-    laptopGroup.position.set(spacing, -0.5, 0); 
-    laptopGroup.scale.set(1.0, 1.0, 1.0);
     scene.add(laptopGroup);
+    
     const mouse = { x: 0, y: 0 };
     const handleMouseMove = (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -154,21 +161,23 @@ const Devices = () => {
       phoneGroup.rotation.y = time * 0.5;
       phoneGroup.rotation.x = Math.sin(time * 0.8) * 0.2;
       phoneGroup.rotation.z = Math.cos(time * 0.6) * 0.1;
-      phoneGroup.position.y = Math.sin(time * 1.2) * 0.4;
+      phoneGroup.position.y = Math.sin(time * 1.2) * 0.4 + (isMobile ? -5 : 0);
       phoneGroup.position.z = Math.sin(time * 0.8) * 0.3;
       phoneGroup.rotation.x += mouse.y * 0.1;
       phoneGroup.rotation.y += mouse.x * 0.1;
       
-      laptopGroup.rotation.y = -time * 0.4;
-      laptopGroup.rotation.x = Math.cos(time * 0.7) * 0.15;
-      laptopGroup.rotation.z = Math.sin(time * 0.5) * 0.08;
-      laptopGroup.position.y = Math.cos(time * 1.2) * 0.4 - 0.5;
-      laptopGroup.position.z = Math.cos(time * 0.8) * 0.3;
-      
-      laptopGroup.rotation.x += mouse.y * 0.08;
-      laptopGroup.rotation.y += mouse.x * 0.08;
+      if (!isMobile) {
+        laptopGroup.rotation.y = -time * 0.4;
+        laptopGroup.rotation.x = Math.cos(time * 0.7) * 0.15;
+        laptopGroup.rotation.z = Math.sin(time * 0.5) * 0.08;
+        laptopGroup.position.y = Math.cos(time * 1.2) * 0.4 - 0.5;
+        laptopGroup.position.z = Math.cos(time * 0.8) * 0.3;
+        
+        laptopGroup.rotation.x += mouse.y * 0.08;
+        laptopGroup.rotation.y += mouse.x * 0.08;
 
-      screenGroup.rotation.x = -Math.PI / 6 + Math.sin(time * 0.3) * 0.1;
+        screenGroup.rotation.x = -Math.PI / 6 + Math.sin(time * 0.3) * 0.1;
+      }
       
       renderer.render(scene, camera);
     }
@@ -186,9 +195,17 @@ const Devices = () => {
       camera.position.z = isMobile ? 12 : 10;
       camera.updateProjectionMatrix();
       
-      const newSpacing = isMobile ? 3 : 6;
-      phoneGroup.position.x = -newSpacing;
-      laptopGroup.position.x = newSpacing;
+      if (isMobile) {
+        phoneGroup.position.set(-3, -5, 0);
+        phoneGroup.scale.set(0.8, 0.8, 0.8);
+        laptopGroup.visible = false;
+      } else {
+        phoneGroup.position.set(-6, 0, 0);
+        phoneGroup.scale.set(1.2, 1.2, 1.2);
+        laptopGroup.position.set(6, -0.5, 0);
+        laptopGroup.scale.set(1.0, 1.0, 1.0);
+        laptopGroup.visible = true;
+      }
       
       renderer.setSize(width, height);
     };
@@ -207,7 +224,7 @@ const Devices = () => {
   return (
     <div 
       ref={mountRef} 
-      className="absolute inset-0 pointer-events-none"
+      className="absolute inset-0 pointer-events-none md:block hidden"
       style={{ zIndex: 1 }}
     />
   );
