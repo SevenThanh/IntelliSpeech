@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import Button from '../ui/Button';
 import Devices from './Devices';
 
+import TextType from '../ui/TextType';
+
+
 const Hero = () => {
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden">
@@ -17,9 +20,14 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h2 className="text-2xl md:text-3xl font-light text-gray-600 mb-4">
-            Welcome to
-          </h2>
+          <TextType 
+                text={["Welcome to"]}
+                typingSpeed={75}
+                pauseDuration={1500}
+                showCursor={true}
+                cursorCharacter="|"
+                className="text-2xl md:text-3xl font-light text-gray-600 mb-4"
+            />
           
           <motion.h1 
             className="text-6xl md:text-8xl font-bold text-gray-900 mb-6"
@@ -38,6 +46,7 @@ const Hero = () => {
           >
             talk, without barriers
           </motion.p>
+          
           
           <motion.div 
             className="flex flex-col sm:flex-row gap-6 justify-center"
