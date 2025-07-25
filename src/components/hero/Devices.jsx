@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const ThreeJSDevices = () => {
+const Devices = () => {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -213,4 +213,4 @@ const ThreeJSDevices = () => {
   );
 };
 
-export default ThreeJSDevices;
+export default Devices;
