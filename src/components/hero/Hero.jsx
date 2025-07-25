@@ -7,11 +7,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden">
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-800 to-purple-800" 
-             style={{
-               backgroundImage: `radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                                radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)`
-             }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-800 to-purple-1000" />
       </div>
 
       <Devices />
