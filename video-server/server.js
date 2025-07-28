@@ -1,13 +1,12 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://tall-nails-worry.loca.lt",
     methods: ["GET", "POST"],
   },
 });
@@ -16,9 +15,8 @@ io.on("connection", (socket) => {
   let currentRoom = null;
   let currentuserId = null;
 
-  console.log(`User ${socket.id} has entered the room`);
+  console.log(`User ${socket.id} connected`);
 
-  // Handling user joining room
   socket.on("join-room", (roomId, userId) => {
     currentRoom = roomId;
     currentuserId = userId;
@@ -26,30 +24,39 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`${userId} joined room: ${roomId}`);
 
+    // Notify all other users in the room
     socket.to(roomId).emit("user-connected", socket.id);
   });
 
-  // Broadcasting offer to other users
-  socket.on("offer", (offer) => {
-    console.log("Offer has been received!");
-    socket.broadcast.emit("offer", offer);
+  // Send offer directly to target peer
+  socket.on("offer", ({ offer, targetId }) => {
+    console.log(`Forwarding offer to ${targetId}`);
+    io.to(targetId).emit("offer", {
+      offer,
+      senderId: socket.id,
+    });
   });
 
-  // Broadcasting answer to other users
-  socket.on("answer", (answer) => {
-    console.log("Answer has been received");
-    socket.broadcast.emit("answer", answer);
+  // Send answer directly to target peer
+  socket.on("answer", ({ answer, targetId }) => {
+    console.log(`Forwarding answer to ${targetId}`);
+    io.to(targetId).emit("answer", {
+      answer,
+      senderId: socket.id,
+    });
   });
 
-  // Broadcast ICE Candidates
-  socket.on("ice-candidates", (candidate) => {
-    console.log("Ice candidate recieved");
-    socket.broadcast.emit("ice-candidate", candidate);
+  // Send ICE candidate directly to target peer
+  socket.on("ice-candidate", ({ candidate, targetId }) => {
+    console.log(`Forwarding ICE candidate to ${targetId}`);
+    io.to(targetId).emit("ice-candidate", {
+      candidate,
+      senderId: socket.id,
+    });
   });
 
-  // Disconnected event handler
   socket.on("disconnect", () => {
-    console.log(`User ${socket.id} has disconnected`);
+    console.log(`User ${socket.id} disconnected`);
     if (currentRoom && currentuserId) {
       socket.to(currentRoom).emit("user-disconnected", currentuserId);
       console.log(
