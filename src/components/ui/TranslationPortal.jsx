@@ -25,17 +25,17 @@ const TranslationPortal = () => {
         setShowOriginal(false);
         setShowTranslated(true);
         setAnimationPhase('appearing-at-portal');
-      }, 1000); 
+      }, 1000);
+      
       setTimeout(() => {
         setAnimationPhase('sliding-from-portal');
-      }, 1500); 
+      }, 1500);
       
       setTimeout(() => {
         setShowTranslated(false);
         setAnimationPhase('pause');
-      }, 3000); 
+      }, 3000);
       
-
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % translations.length);
       }, 3500);
@@ -51,9 +51,8 @@ const TranslationPortal = () => {
   const currentTranslation = translations[currentIndex];
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative w-[800px] h-[300px] flex items-center justify-center">
-        {/* Left side container */}
+    <div className="flex items-center justify-center h-[400px] bg-white">
+      <div className="relative w-[800px] h-[200px] flex items-center justify-center">
         <div className="absolute left-0 w-1/2 h-full flex items-center">
           {showOriginal && (
             <div
@@ -70,6 +69,7 @@ const TranslationPortal = () => {
         </div>
 
         <div className="absolute left-1/2 transform -translate-x-1/2 w-2 h-full bg-black z-10" />
+
         <div className="absolute right-0 w-1/2 h-full flex items-center">
           {showTranslated && (
             <div

@@ -8,7 +8,7 @@ import TextType from '../ui/TextType';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-slate-100 via-blue-200 to-indigo-100 overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-br from-slate-100 via-blue-300 to-indigo-100 overflow-hidden">
 
       <Devices />
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
