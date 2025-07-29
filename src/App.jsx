@@ -4,6 +4,10 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import MicTestPage from "./pages/MicTestPage";
 import VideoCallPage from "./pages/VideoCallPage";
+<<<<<<<<< Temporary merge branch 1
+=========
+
+>>>>>>>>> Temporary merge branch 2
 function App() {
   return (
     <div className="App">

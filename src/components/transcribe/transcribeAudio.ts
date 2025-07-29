@@ -2,7 +2,7 @@ export async function transcribeAudio(
   file: File,
   languageCode: string
 ): Promise<string> {
-  const apiKey = (import.meta as any).env.VITE_GOOGLE_API_KEY;
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
   function toBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
