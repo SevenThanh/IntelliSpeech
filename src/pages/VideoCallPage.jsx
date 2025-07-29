@@ -478,7 +478,8 @@ const VideoCallPage = () => {
       {/* Language and Recording Controls */}
       <div className="flex flex-col items-center space-y-4">
         <div className="flex space-x-4">
-          <div>
+          {/* Remove Transcribe language selector */}
+          {/* <div>
             <label className="block mb-1 text-sm font-semibold text-blue-200">
               Transcribe:
             </label>
@@ -493,7 +494,7 @@ const VideoCallPage = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           <div>
             <label className="block mb-1 text-sm font-semibold text-green-200">
               Translate:

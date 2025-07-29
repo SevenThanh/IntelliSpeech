@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { transcribeAudio } from "../components/transcribe/transcribeAudio";
 import { translateText } from "../components/translate/translateText";
-
 const LANGUAGES = [
   { label: "English (US)", code: "en-US", ttsCode: "en-US" },
   { label: "Spanish", code: "es-ES", ttsCode: "es-ES" },
   { label: "Japanese", code: "ja-JP", ttsCode: "ja-JP" },
   { label: "Bangla", code: "bn-BD", ttsCode: "bn-IN" },
 ];
-
 export default function SimpleVoiceTranslator() {
   const [recording, setRecording] = useState(false);
   const [output, setOutput] = useState("");
@@ -19,7 +17,6 @@ export default function SimpleVoiceTranslator() {
   const chunksRef = useRef<Blob[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-
   // Initialize video stream on component mount
   useEffect(() => {
     const initVideo = async () => {
@@ -36,9 +33,7 @@ export default function SimpleVoiceTranslator() {
         console.error("Could not access camera:", err);
       }
     };
-
     initVideo();
-
     // Cleanup on unmount
     return () => {
       if (streamRef.current) {
@@ -46,7 +41,6 @@ export default function SimpleVoiceTranslator() {
       }
     };
   }, []);
-
   function speak(text: string, lang: string = "es-ES") {
     if (!window.speechSynthesis) {
       alert("Speech synthesis not supported");
@@ -56,18 +50,15 @@ export default function SimpleVoiceTranslator() {
     utterance.lang = lang;
     window.speechSynthesis.speak(utterance);
   }
-
   const startRecording = async () => {
     setOutput("");
     setTranslation("");
     chunksRef.current = [];
-
     try {
       // Get fresh audio stream for recording
       const audioStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-
       // Try different MIME types for better compatibility
       let mimeType = "audio/webm";
       if (!MediaRecorder.isTypeSupported("audio/webm")) {
@@ -79,32 +70,27 @@ export default function SimpleVoiceTranslator() {
           mimeType = ""; // Let browser choose
         }
       }
-
       const mediaRecorder = new MediaRecorder(
         audioStream,
         mimeType ? { mimeType } : {}
       );
       mediaRecorderRef.current = mediaRecorder;
-
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
           chunksRef.current.push(e.data);
         }
       };
-
       mediaRecorder.onstop = async () => {
         // Stop the audio stream tracks to free up the microphone
         audioStream.getTracks().forEach((track) => track.stop());
-
         const blob = new Blob(chunksRef.current, {
           type: mimeType || "audio/webm",
         });
         const file = new File([blob], "recording.webm", {
           type: mimeType || "audio/webm",
         });
-
         try {
-          const transcript = await transcribeAudio(file, transcribeLang);
+          const transcript = await transcribeAudio(file);
           const translatedText = await translateText(
             transcript,
             translateLang.split("-")[0]
@@ -113,7 +99,6 @@ export default function SimpleVoiceTranslator() {
           setOutput(
             `Transcript: ${transcript}\n\nTranslation: ${translatedText}`
           );
-
           const ttsLang =
             LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
           speak(translatedText, ttsLang);
@@ -121,21 +106,18 @@ export default function SimpleVoiceTranslator() {
           setOutput("Error: " + err.message);
         }
       };
-
       mediaRecorder.start();
       setRecording(true);
     } catch (err: any) {
       setOutput("Could not access microphone: " + err.message);
     }
   };
-
   const stopRecording = () => {
     if (mediaRecorderRef.current && recording) {
       mediaRecorderRef.current.stop();
       setRecording(false);
     }
   };
-
   const playTranslation = () => {
     if (translation) {
       const ttsLang =
@@ -143,7 +125,6 @@ export default function SimpleVoiceTranslator() {
       speak(translation, ttsLang);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4 space-y-6">
       {/* Video Display */}
@@ -159,7 +140,6 @@ export default function SimpleVoiceTranslator() {
           Your Camera
         </div>
       </div>
-
       {/* Language Selection */}
       <div className="flex space-x-4 w-full max-w-lg">
         <div className="flex-1 space-y-1">
@@ -176,7 +156,6 @@ export default function SimpleVoiceTranslator() {
             ))}
           </select>
         </div>
-
         <div className="flex-1 space-y-1">
           <label className="text-sm font-medium">Translation Language:</label>
           <select
@@ -192,7 +171,6 @@ export default function SimpleVoiceTranslator() {
           </select>
         </div>
       </div>
-
       {/* Recording Controls */}
       <div className="flex space-x-4">
         <button
@@ -204,9 +182,8 @@ export default function SimpleVoiceTranslator() {
               : "bg-green-600 hover:bg-green-700"
           }`}
         >
-          {recording ? "Recording..." : "Unmute"}
+          {recording ? "Recording..." : "Start Recording"}
         </button>
-
         <button
           onClick={stopRecording}
           disabled={!recording}
@@ -216,20 +193,18 @@ export default function SimpleVoiceTranslator() {
               : "bg-red-600 hover:bg-red-700"
           }`}
         >
-          Mute
+          Stop Recording
         </button>
       </div>
-
       {/* Play Translation Button */}
       {translation && (
         <button
           onClick={playTranslation}
           className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-bold"
         >
-          🔊 Play Translation
+          :loud_sound: Play Translation
         </button>
       )}
-
       {/* Output Display */}
       <div className="bg-gray-800 p-6 rounded-xl w-full max-w-2xl space-y-4">
         <div className="space-y-2">
@@ -250,7 +225,6 @@ export default function SimpleVoiceTranslator() {
             </p>
           </div>
         </div>
-
         {output && (
           <div className="mt-4 pt-4 border-t border-gray-600">
             <h4 className="text-sm font-bold text-gray-400 mb-2">
