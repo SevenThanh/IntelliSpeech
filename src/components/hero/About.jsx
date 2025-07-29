@@ -39,10 +39,8 @@ const About = () => {
                 </div>
             </div>
 
-            {/* NEW: How to Use Section - Premium Feature Showcase */}
             <HowToUseSection />
 
-            {/* Existing Join in Any Language Section */}
             <div className="py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-5xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
