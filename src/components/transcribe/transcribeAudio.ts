@@ -1,5 +1,8 @@
-export async function transcribeAudio(file: File, languageCode: string): Promise<string> {
-  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+export async function transcribeAudio(
+  file: File,
+  languageCode: string
+): Promise<string> {
+  const apiKey = (import.meta as any).env.VITE_GOOGLE_API_KEY;
 
   function toBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -33,7 +36,9 @@ export async function transcribeAudio(file: File, languageCode: string): Promise
   const result = await response.json();
 
   if (result.results && result.results.length > 0) {
-    return result.results.map((r: any) => r.alternatives[0].transcript).join("\n");
+    return result.results
+      .map((r: any) => r.alternatives[0].transcript)
+      .join("\n");
   } else {
     throw new Error(result.error?.message || "No transcript found.");
   }

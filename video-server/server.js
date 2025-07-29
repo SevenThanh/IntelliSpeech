@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://tall-nails-worry.loca.lt",
+    origin: "https://silly-rockets-smoke.loca.lt",
     methods: ["GET", "POST"],
   },
 });
@@ -54,6 +54,27 @@ io.on("connection", (socket) => {
       senderId: socket.id,
     });
   });
+
+  // Relay mic-status to other users in the room
+  socket.on("mic-status", ({ micOn, targetId, senderId }) => {
+    if (currentRoom) {
+      // Broadcast to everyone else in the room except sender
+      socket.to(currentRoom).emit("mic-status", { micOn, senderId });
+    }
+  });
+
+  // Relay transcription-message to the target peer
+  socket.on(
+    "transcription-message",
+    ({ transcript, translation, targetId }) => {
+      if (targetId) {
+        io.to(targetId).emit("transcription-message", {
+          transcript,
+          translation,
+        });
+      }
+    }
+  );
 
   socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);

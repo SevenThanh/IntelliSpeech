@@ -1,17 +1,9 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-
 import LandingPage from "./pages/LandingPage";
 import MicTestPage from "./pages/MicTestPage";
 import VideoCallPage from "./pages/VideoCallPage";
-=========
-import { useState } from 'react'
-import './App.css'
-import LandingPage from './pages/LandingPage'
-import MicTestPage from "./pages/MicTestPage"
->>>>>>>>> Temporary merge branch 2
-
 function App() {
   return (
     <div className="App">
