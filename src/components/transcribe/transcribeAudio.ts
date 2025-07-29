@@ -1,39 +1,22 @@
 export async function transcribeAudio(file: File, languageCode: string): Promise<string> {
-  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-
-  function toBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve((reader.result as string).split(",")[1]);
-      reader.onerror = (err) => reject(err);
-    });
-  }
-
-  const base64Audio = await toBase64(file);
-
-  const body = {
-    config: {
-      languageCode,
+  const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
+  
+  const formData = new FormData();
+  formData.append("model_id", "scribe_v1");
+  formData.append("file", file, file.name);
+  
+  const response = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
+    method: "POST",
+    headers: {
+      "xi-api-key": apiKey
     },
-    audio: {
-      content: base64Audio,
-    },
-  };
-
-  const response = await fetch(
-    `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }
-  );
-
+    body: formData
+  });
+  
   const result = await response.json();
-
-  if (result.results && result.results.length > 0) {
-    return result.results.map((r: any) => r.alternatives[0].transcript).join("\n");
+  
+  if (response.ok && result.text) {
+    return result.text;
   } else {
     throw new Error(result.error?.message || "No transcript found.");
   }
