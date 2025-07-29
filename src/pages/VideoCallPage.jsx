@@ -376,7 +376,7 @@ const VideoCallPage = () => {
             autoPlay
             playsInline
             muted
-            className="w-72 h-48 border-2 border-blue-400 rounded-xl shadow-lg object-cover"
+            className="w-[800px] h-[540px] border-2 border-blue-400 rounded-xl shadow-lg object-cover"
           />
           {/* Mic status badge */}
           <div className="absolute top-2 left-2">
@@ -427,7 +427,7 @@ const VideoCallPage = () => {
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="w-72 h-48 border-2 border-green-400 rounded-xl shadow-lg object-cover"
+            className="w-[800px] h-[540px] border-2 border-green-400 rounded-xl shadow-lg object-cover"
           />
           {/* Remote mic status badge */}
           <div className="absolute top-2 left-2">
