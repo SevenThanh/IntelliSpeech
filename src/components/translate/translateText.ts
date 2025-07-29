@@ -1,5 +1,8 @@
-export async function translateText(text: string, targetLanguage: string): Promise<string> {
-  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+export async function translateText(
+  text: string,
+  targetLanguage: string
+): Promise<string> {
+  const apiKey = (import.meta as any).env.VITE_GOOGLE_API_KEY;
 
   const response = await fetch(
     `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,

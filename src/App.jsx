@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-
 import LandingPage from "./pages/LandingPage";
 import MicTestPage from "./pages/MicTestPage";
 import VideoCallPage from "./pages/VideoCallPage";
@@ -19,5 +18,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
