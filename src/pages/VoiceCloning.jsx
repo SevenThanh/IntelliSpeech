@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../config/supabase';
 import Button from '../components/ui/Button';
 import Navbar from '../components/ui/Navbar';
 
@@ -12,7 +13,9 @@ const VoiceCloning = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [cloningSuccess, setCloningSuccess] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [permissionError, setPermissionError] = useState('');
+  const [processingError, setProcessingError] = useState('');
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
@@ -96,9 +99,41 @@ const VoiceCloning = () => {
     }
   };
 
-  const confirmRecording = () => {
-    setCloningSuccess(true);
-    setShowConfirmation(false);
+  const confirmRecording = async () => {
+    if (!audioBlob || !user) {
+      setProcessingError('Audio recording or user authentication missing');
+      return;
+    }
+
+    setIsProcessing(true);
+    setProcessingError('');
+
+    try {
+      const formData = new FormData();
+      const audioFile = new File([audioBlob], 'voice-recording.wav', { 
+        type: audioBlob.type 
+      });
+      
+      formData.append('File', audioFile);
+
+      // Call the Supabase function
+      const { data, error } = await supabase.functions.invoke('create-voice', {
+        body: formData
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // show success state
+      setCloningSuccess(true);
+      setShowConfirmation(false);
+    } catch (error) {
+      console.error('Error creating voice clone:', error);
+      setProcessingError(error.message || 'Failed to process voice recording. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const retryRecording = () => {
@@ -150,10 +185,22 @@ const VoiceCloning = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="mb-8"
                   >
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Voice Cloning</h1>
-                    <p className="text-gray-600 text-lg">
-                      Record a 15-second sample of your voice to create your personal voice clone
-                    </p>
+                                         <h1 className="text-4xl font-bold text-gray-900 mb-4">Voice Cloning</h1>
+                     <p className="text-gray-600 text-lg mb-6">
+                       Record a 15-second sample of your voice to create your personal voice clone
+                     </p>
+                     
+                     {/* Reading Script */}
+                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                       <h3 className="text-lg font-semibold text-blue-900 mb-3">📖 Please read this script:</h3>
+                       <p className="text-blue-800 text-base leading-relaxed font-medium">
+                         "Hello, this is my voice sample for cloning. I enjoy exploring new technologies and creating amazing experiences. 
+                         The quick brown fox jumps over the lazy dog while numbers like one, two, three, and phrases with various sounds help create a comprehensive voice profile."
+                       </p>
+                       <p className="text-blue-600 text-sm mt-3">
+                         💡 Speak clearly and naturally at your normal pace
+                       </p>
+                     </div>
                   </motion.div>
 
                   {/* Recording Interface */}
@@ -244,18 +291,30 @@ const VoiceCloning = () => {
                           <Button
                             variant="primary"
                             onClick={confirmRecording}
+                            disabled={isProcessing}
                             className="py-3 px-6"
                           >
-                            Use This Recording
+                            {isProcessing ? 'Processing...' : 'Use This Recording'}
                           </Button>
                           <Button
                             variant="secondary"
                             onClick={retryRecording}
+                            disabled={isProcessing}
                             className="py-3 px-6"
                           >
                             Record Again
                           </Button>
                         </div>
+
+                        {processingError && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-4 bg-red-50 border border-red-200 rounded-lg mt-4"
+                          >
+                            <p className="text-red-600">{processingError}</p>
+                          </motion.div>
+                        )}
                       </div>
                     </motion.div>
                   )}
