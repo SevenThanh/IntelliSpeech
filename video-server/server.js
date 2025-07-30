@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://silly-things-kiss.loca.lt",
+    origin: "https://orange-donkeys-hammer.loca.lt",
     methods: ["GET", "POST"],
   },
 });
