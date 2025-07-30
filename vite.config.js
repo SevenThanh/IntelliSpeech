@@ -6,6 +6,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    allowedHosts: ["silly-rockets-smoke.loca.lt"],
+    allowedHosts: ["silly-things-kiss.loca.lt"],
   },
 });

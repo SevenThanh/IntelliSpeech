@@ -37,7 +37,7 @@ const VideoCallPage = () => {
   const ROOM_ID = "demo-room";
 
   useEffect(() => {
-    const socket = io("https://ca2d871c4c47.ngrok.app");
+    const socket = io("https://a003ae3a5e3a.ngrok.app");
     socketRef.current = socket;
 
     console.log("🔌 Setting up socket connection...");
