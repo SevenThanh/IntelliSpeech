@@ -1,5 +1,5 @@
 import TranslationPortal from "../ui/TranslationPortal";
-import HowToUseSection from "../ui/HowToUseSection"; // Import the new component
+import HowToUseSection from "../ui/HowToUseSection"; 
 import chinaImage from "../../assets/china.png";
 import franceImage from "../../assets/france.png";
 import spainImage from "../../assets/spain.png";
@@ -20,23 +20,19 @@ const handleAnimationComplete = () => {
 
 const About = () => {
     return (
-        <div className="min-h-screen bg-white">
-            {/* Hero Section */}
+        <div className="min-h-screen bg-gradient-to-br ">
             <div className="py-8 px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-center items-center mt-10">
+                <div className="flex justify-center items-center">
                     <BlurText
                         text="No more language barriers"
                         delay={360}
                         animateBy="words"
                         direction="top"
                         onAnimationComplete={handleAnimationComplete}
-                        className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center"
+                        className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center "
                     />
                 </div>
-
-                <div className="mb-6">
                     <TranslationPortal/>
-                </div>
             </div>
 
             <HowToUseSection />

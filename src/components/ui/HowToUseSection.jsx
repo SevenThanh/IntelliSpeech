@@ -96,7 +96,7 @@ const HowToUseSection = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       
       <FloatingElement delay={0} duration={6}>
         <div className="top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-xl"></div>
@@ -112,7 +112,6 @@ const HowToUseSection = () => {
 
       <div ref={sectionRef} className="max-w-6xl mx-auto relative z-10">
         
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
