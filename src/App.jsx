@@ -7,6 +7,8 @@ import LandingPage from './pages/LandingPage'
 import VoiceCloning from './pages/VoiceCloning'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
+import MicTestPage from './pages/MicTestPage'
+import VideoCallPage from './pages/VideoCallPage'
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="/mic-test" element={<MicTestPage />} />
+            <Route path="/video-call" element={<VideoCallPage />} />
           </Routes>
         </div>
       </Router>
