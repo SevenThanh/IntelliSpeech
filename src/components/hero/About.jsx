@@ -1,5 +1,6 @@
 import TranslationPortal from "../ui/TranslationPortal";
 import HowToUseSection from "../ui/HowToUseSection"; 
+import FAQ from "../ui/FAQ";
 import chinaImage from "../../assets/china.png";
 import franceImage from "../../assets/france.png";
 import spainImage from "../../assets/spain.png";
@@ -20,7 +21,7 @@ const handleAnimationComplete = () => {
 
 const About = () => {
     return (
-        <div className="min-h-screen bg-gradient-to-br ">
+        <div className="min-h-screen ">
             <div className="py-8 px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-center items-center">
                     <BlurText
@@ -77,6 +78,7 @@ const About = () => {
                     </div>
                 </div>
             </div>
+            <FAQ/>
         </div>
     );
 }

@@ -72,7 +72,7 @@ const HowToUseSection = () => {
     {
       step: 1,
       title: "Join the Room",
-      description: "Click the meeting link or enter the room ID. No downloads required - works instantly in your browser.",
+      description: "Click the meeting link or enter the room ID. No downloads required, works instantly in your browser.",
       icon: "🚀"
     },
     {
