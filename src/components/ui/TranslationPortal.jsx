@@ -51,7 +51,7 @@ const TranslationPortal = () => {
   const currentTranslation = translations[currentIndex];
 
   return (
-    <div className="flex items-center justify-center h-[400px] bg-white">
+    <div className="flex items-center justify-center h-[400px]">
       <div className="relative w-[800px] h-[200px] flex items-center justify-center">
         <div className="absolute left-0 w-1/2 h-full flex items-center">
           {showOriginal && (

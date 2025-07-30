@@ -8,7 +8,7 @@ const LandingPage = () => {
   const { showNavbar } = useAuth();
 
   return (
-    <div className="relative overflow-x-hidden">
+    <div className=" bg-gradient-to-br from-slate-100 via-blue-200 to-purple-200 relative overflow-x-hidden">
       <Hero />
       {showNavbar && <Navbar />}
       <About/>

@@ -27,7 +27,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-slate-100 via-blue-300 to-indigo-100 overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden">
 
       <Devices />
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 pt-16">
@@ -46,7 +46,7 @@ const Hero = () => {
             />
           
           <motion.h1 
-            className="text-6xl md:text-8xl font-bold text-gray-900 mb-6"
+            className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
