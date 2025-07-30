@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { supabase } from "../config/supabase";
 import { transcribeAudio } from "../components/transcribe/transcribeAudio";
 import { translateText } from "../components/translate/translateText";
+import { textToSpeech, playTTSAudio } from "../components/tts/textToSpeech";
 
 const LANGUAGES = [
   { label: "English (US)", code: "en-US", ttsCode: "en-US" },
@@ -225,7 +226,7 @@ const VideoCallPage = () => {
     };
   }, []);
 
-  // 🔊 Speech Synthesis using Supabase Edge Function
+  // 🔊 Speech Synthesis using ElevenLabs TTS
   const speak = async (text, lang = "es-ES") => {
     if (!text || text.trim() === "") {
       console.warn("No text provided for TTS");
@@ -233,46 +234,22 @@ const VideoCallPage = () => {
     }
 
     try {
-      // Call Supabase edge function for TTS
-      const { data, error } = await supabase.functions.invoke('tts', {
-        body: { text: text.trim() }
+      console.log("🎤 Generating TTS for:", text.trim());
+      
+      // Call our client-side TTS function
+      const audioBlob = await textToSpeech({ 
+        text: text.trim(),
+        stability: 0.5,
+        similarity_boost: 0.9
       });
 
-      if (error) {
-        console.error("Supabase TTS Error:", error);
-        // Fallback to browser TTS if edge function fails
-        fallbackToWebTTS(text, lang);
-        return;
-      }
-
-      // Handle the base64 audio response
-      if (data) {
-        // Convert base64 to blob
-        const base64Audio = data;
-        const binaryString = atob(base64Audio);
-        const bytes = new Uint8Array(binaryString.length);
-        
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        
-        const audio = new Audio(audioUrl);
-        audio.play().catch(err => {
-          console.error("Error playing TTS audio:", err);
-          fallbackToWebTTS(text, lang);
-        });
-
-        // Clean up the URL after playing
-        audio.onended = () => URL.revokeObjectURL(audioUrl);
-      } else {
-        console.error("No audio data received");
-        fallbackToWebTTS(text, lang);
-      }
-    } catch (err) {
-      console.error("Supabase TTS request failed:", err);
+      // Play the generated audio
+      await playTTSAudio(audioBlob);
+      console.log("✅ TTS audio played successfully");
+      
+    } catch (error) {
+      console.error("TTS failed:", error);
+      // Fallback to browser TTS if our custom TTS fails
       fallbackToWebTTS(text, lang);
     }
   };
