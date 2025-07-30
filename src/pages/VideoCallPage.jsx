@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { supabase } from "../config/supabase";
 import { transcribeAudio } from "../components/transcribe/transcribeAudio";
 import { translateText } from "../components/translate/translateText";
 
@@ -224,30 +225,82 @@ const VideoCallPage = () => {
     };
   }, []);
 
-  // 🔊 Speech Synthesis
-  const speak = (text, lang = "es-ES") => {
-    if (!window.speechSynthesis) {
-      alert("Speech synthesis not supported");
+  // 🔊 Speech Synthesis using Supabase Edge Function
+  const speak = async (text, lang = "es-ES") => {
+    if (!text || text.trim() === "") {
+      console.warn("No text provided for TTS");
       return;
     }
-    const utterance = new window.SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    window.speechSynthesis.speak(utterance);
+
+    try {
+      // Call Supabase edge function for TTS
+      const { data, error } = await supabase.functions.invoke('tts', {
+        body: { text: text.trim() }
+      });
+
+      if (error) {
+        console.error("Supabase TTS Error:", error);
+        // Fallback to browser TTS if edge function fails
+        fallbackToWebTTS(text, lang);
+        return;
+      }
+
+      // Handle the base64 audio response
+      if (data) {
+        // Convert base64 to blob
+        const base64Audio = data;
+        const binaryString = atob(base64Audio);
+        const bytes = new Uint8Array(binaryString.length);
+        
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        const audio = new Audio(audioUrl);
+        audio.play().catch(err => {
+          console.error("Error playing TTS audio:", err);
+          fallbackToWebTTS(text, lang);
+        });
+
+        // Clean up the URL after playing
+        audio.onended = () => URL.revokeObjectURL(audioUrl);
+      } else {
+        console.error("No audio data received");
+        fallbackToWebTTS(text, lang);
+      }
+    } catch (err) {
+      console.error("Supabase TTS request failed:", err);
+      fallbackToWebTTS(text, lang);
+    }
   };
 
-  const playTranslation = () => {
+  // Fallback to browser TTS if Supabase function fails
+  const fallbackToWebTTS = (text, lang) => {
+    if (window.speechSynthesis) {
+      const utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error("No TTS available");
+    }
+  };
+
+  const playTranslation = async () => {
     if (translation) {
       const ttsLang =
         LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-      speak(translation, ttsLang);
+      await speak(translation, ttsLang);
     }
   };
 
-  const playRemoteTranslation = () => {
+  const playRemoteTranslation = async () => {
     if (remoteTranslation) {
       const ttsLang =
         LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-      speak(remoteTranslation, ttsLang);
+      await speak(remoteTranslation, ttsLang);
     }
   };
 
@@ -312,7 +365,7 @@ const VideoCallPage = () => {
 
           const ttsLang =
             LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-          speak(translatedText, ttsLang);
+          await speak(translatedText, ttsLang);
         } catch (err) {
           setOutput("Error: " + err.message);
         }
