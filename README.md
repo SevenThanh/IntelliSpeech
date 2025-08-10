@@ -33,7 +33,7 @@ cd IntelliSpeech
 
 2. **Install dependencies**
 
-npm install
+``` npm install```
 
 3. **Environment variables**
 
