@@ -59,6 +59,7 @@ npm run test
 
 
 ⚙️ Project Structure
+``` 
 IntelliSpeech/
 ├── public/
 ├── src/
@@ -73,6 +74,7 @@ IntelliSpeech/
 ├── package.json
 ├── README.md
 └── …
+``` 
 
 ## 👥 Contributors
 
