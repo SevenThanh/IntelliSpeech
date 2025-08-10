@@ -78,10 +78,10 @@ IntelliSpeech/
 
 ## 👥 Contributors
 
-Johan Nguyen (lead)
-Amin Mohamed
-Almansur Antor 
-William Jijon
+- Johan Nguyen (lead)
+- Amin Mohamed
+- Almansur Antor 
+- William Jijon
 
 ## 🗺️ Roadmap
 
