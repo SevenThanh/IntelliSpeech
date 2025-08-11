@@ -43,14 +43,13 @@ Create a .env file with:
 ELEVENLABS_API_KEY=your_key
 SUPABASE_URL=your_url
 SUPABASE_ANON_KEY=your_key
+SIGNALING_URL=http://localhost:xxxx or your deployed Socket.IO server
 ````
 
-SIGNALING_URL=http://localhost:xxxx or your deployed Socket.IO server
-
 4. **Run the development server**
-
+```
 npm run dev
-
+```
 5. Run tests 
 
 ```
