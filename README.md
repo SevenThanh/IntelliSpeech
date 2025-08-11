@@ -81,7 +81,6 @@ IntelliSpeech/
 - Amin Mohamed
 - Almansur Antor 
 - William Jijon
-- Peace Enesi
 
 ## 🗺️ Roadmap
 
