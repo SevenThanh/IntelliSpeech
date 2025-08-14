@@ -1,12 +1,93 @@
-# React + Vite
+# 🎙️ IntelliSpeech
+IntelliSpeech is a real‑time video calling app with AI speech‑to‑speech translation and natural voice synthesis. It lets participants speak in their own language while hearing each other in lifelike, translated voices—without leaving the browser.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Features
 
-Currently, two official plugins are available:
+- 📹 Low‑latency video and audio via WebRTC
+- 🌐 Real‑time multilingual conversations (STT → translate → TTS)
+- 🗣️ High‑quality voice cloning/synthesis with ElevenLabs
+- 🔐 Secure authentication and room access
+- ⚡ Socket.IO signaling for fast call setup
+- 📝 Live captions/subtitles 
+- 💾 Scalable backend with Supabase (auth, data)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+- Frontend: React, Tailwind CSS, Three.js (UI polish)
+- Realtime Media: WebRTC (P2P), Socket.IO (signaling)
+- Voice/AI: ElevenLabs APIs (TTS, conversational/voice cloning)
+- Backend: TypeScript, Supabase (Auth + DB)
+- Testing: Vitest 
+- CI/CD: GitHub Actions 
+- Version Control: Git + GitHub
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📦 Getting Started
+
+1. **Clone the repository**
+
+```
+git clone https://github.com/SevenThanh/IntelliSpeech.git
+
+cd IntelliSpeech
+```
+
+2. **Install dependencies**
+
+``` npm install```
+
+3. **Environment variables**
+
+Create a .env file with:
+
+```
+ELEVENLABS_API_KEY=your_key
+SUPABASE_URL=your_url
+SUPABASE_ANON_KEY=your_key
+SIGNALING_URL=http://localhost:xxxx or your deployed Socket.IO server
+````
+
+4. **Run the development server**
+```
+npm run dev
+```
+5. Run tests 
+
+```
+npm run test
+```
+
+
+⚙️ Project Structure
+``` 
+IntelliSpeech/
+├── public/
+├── src/
+│ ├── components/ UI, call controls, captions
+│ ├── hooks/ WebRTC device/connection hooks
+│ ├── pages/ routes (rooms, auth)
+│ ├── lib/ ElevenLabs + signaling clients
+│ └── utils/ helpers, types
+├── server/ signaling bridge (Socket.IO) [if in repo]
+├── .github/
+│ └── workflows/ CI (tests/lint) [optional]
+├── package.json
+├── README.md
+└── …
+``` 
+
+## 👥 Contributors
+
+- Johan Nguyen (lead)
+- Amin Mohamed
+- Almansur Antor 
+- William Jijon
+
+## 🗺️ Roadmap
+
+- SFU support for larger rooms and recording
+- Always‑on subtitles with speaker diarization
+- Mobile optimizations and PWA
+- One‑click room links with role‑based permissions
+
+## 📄 License
+MIT

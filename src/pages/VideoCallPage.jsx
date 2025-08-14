@@ -1,13 +1,62 @@
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { supabase } from "../config/supabase";
 import { transcribeAudio } from "../components/transcribe/transcribeAudio";
 import { translateText } from "../components/translate/translateText";
+import { textToSpeech, playTTSAudio } from "../components/tts/textToSpeech";
 
 const LANGUAGES = [
+  // Major European Languages
   { label: "English (US)", code: "en-US", ttsCode: "en-US" },
+  { label: "English (UK)", code: "en-GB", ttsCode: "en-GB" },
   { label: "Spanish", code: "es-ES", ttsCode: "es-ES" },
+  { label: "French", code: "fr-FR", ttsCode: "fr-FR" },
+  { label: "German", code: "de-DE", ttsCode: "de-DE" },
+  { label: "Italian", code: "it-IT", ttsCode: "it-IT" },
+  { label: "Portuguese", code: "pt-PT", ttsCode: "pt-PT" },
+  { label: "Dutch", code: "nl-NL", ttsCode: "nl-NL" },
+  { label: "Russian", code: "ru-RU", ttsCode: "ru-RU" },
+  { label: "Polish", code: "pl-PL", ttsCode: "pl-PL" },
+  { label: "Swedish", code: "sv-SE", ttsCode: "sv-SE" },
+  { label: "Norwegian", code: "no-NO", ttsCode: "no-NO" },
+  { label: "Danish", code: "da-DK", ttsCode: "da-DK" },
+  { label: "Finnish", code: "fi-FI", ttsCode: "fi-FI" },
+  { label: "Czech", code: "cs-CZ", ttsCode: "cs-CZ" },
+  { label: "Slovak", code: "sk-SK", ttsCode: "sk-SK" },
+  { label: "Hungarian", code: "hu-HU", ttsCode: "hu-HU" },
+  { label: "Ukrainian", code: "uk-UA", ttsCode: "uk-UA" },
+  { label: "Bulgarian", code: "bg-BG", ttsCode: "bg-BG" },
+  { label: "Croatian", code: "hr-HR", ttsCode: "hr-HR" },
+  { label: "Serbian", code: "sr-RS", ttsCode: "sr-RS" },
+  { label: "Romanian", code: "ro-RO", ttsCode: "ro-RO" },
+  { label: "Greek", code: "el-GR", ttsCode: "el-GR" },
+  // Asian Languages
+  { label: "Chinese (Mandarin)", code: "zh-CN", ttsCode: "zh-CN" },
+  { label: "Chinese (Traditional)", code: "zh-TW", ttsCode: "zh-TW" },
   { label: "Japanese", code: "ja-JP", ttsCode: "ja-JP" },
-  { label: "Bangla", code: "bn-BD", ttsCode: "bn-IN" },
+  { label: "Korean", code: "ko-KR", ttsCode: "ko-KR" },
+  { label: "Hindi", code: "hi-IN", ttsCode: "hi-IN" },
+  { label: "Bengali", code: "bn-BD", ttsCode: "bn-IN" },
+  { label: "Telugu", code: "te-IN", ttsCode: "te-IN" },
+  { label: "Tamil", code: "ta-IN", ttsCode: "ta-IN" },
+  { label: "Marathi", code: "mr-IN", ttsCode: "mr-IN" },
+  { label: "Gujarati", code: "gu-IN", ttsCode: "gu-IN" },
+  { label: "Kannada", code: "kn-IN", ttsCode: "kn-IN" },
+  { label: "Malayalam", code: "ml-IN", ttsCode: "ml-IN" },
+  { label: "Punjabi", code: "pa-IN", ttsCode: "pa-IN" },
+  { label: "Urdu", code: "ur-PK", ttsCode: "ur-PK" },
+  { label: "Thai", code: "th-TH", ttsCode: "th-TH" },
+  { label: "Vietnamese", code: "vi-VN", ttsCode: "vi-VN" },
+  { label: "Indonesian", code: "id-ID", ttsCode: "id-ID" },
+  { label: "Malay", code: "ms-MY", ttsCode: "ms-MY" },
+  { label: "Filipino", code: "fil-PH", ttsCode: "fil-PH" },
+  // Middle Eastern & African Languages
+  { label: "Arabic", code: "ar-SA", ttsCode: "ar-SA" },
+  { label: "Hebrew", code: "he-IL", ttsCode: "he-IL" },
+  { label: "Turkish", code: "tr-TR", ttsCode: "tr-TR" },
+  { label: "Persian (Farsi)", code: "fa-IR", ttsCode: "fa-IR" },
+  { label: "Swahili", code: "sw-KE", ttsCode: "sw-KE" },
+  { label: "Amharic", code: "am-ET", ttsCode: "am-ET" },
 ];
 
 const VideoCallPage = () => {
@@ -37,7 +86,7 @@ const VideoCallPage = () => {
   const ROOM_ID = "demo-room";
 
   useEffect(() => {
-    const socket = io("https://a003ae3a5e3a.ngrok.app");
+    const socket = io("https://08b47957b846.ngrok.app");
     socketRef.current = socket;
 
     console.log("🔌 Setting up socket connection...");
@@ -224,30 +273,58 @@ const VideoCallPage = () => {
     };
   }, []);
 
-  // 🔊 Speech Synthesis
-  const speak = (text, lang = "es-ES") => {
-    if (!window.speechSynthesis) {
-      alert("Speech synthesis not supported");
+  // 🔊 Speech Synthesis using ElevenLabs TTS
+  const speak = async (text, lang = "es-ES") => {
+    if (!text || text.trim() === "") {
+      console.warn("No text provided for TTS");
       return;
     }
-    const utterance = new window.SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    window.speechSynthesis.speak(utterance);
+
+    try {
+      console.log("🎤 Generating TTS for:", text.trim());
+      
+      // Call our client-side TTS function
+      const audioBlob = await textToSpeech({ 
+        text: text.trim(),
+        stability: 0.5,
+        similarity_boost: 0.9
+      });
+
+      // Play the generated audio
+      await playTTSAudio(audioBlob);
+      console.log("✅ TTS audio played successfully");
+      
+    } catch (error) {
+      console.error("TTS failed:", error);
+      // Fallback to browser TTS if our custom TTS fails
+      fallbackToWebTTS(text, lang);
+    }
   };
 
-  const playTranslation = () => {
+  // Fallback to browser TTS if Supabase function fails
+  const fallbackToWebTTS = (text, lang) => {
+    if (window.speechSynthesis) {
+      const utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error("No TTS available");
+    }
+  };
+
+  const playTranslation = async () => {
     if (translation) {
       const ttsLang =
         LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-      speak(translation, ttsLang);
+      await speak(translation, ttsLang);
     }
   };
 
-  const playRemoteTranslation = () => {
+  const playRemoteTranslation = async () => {
     if (remoteTranslation) {
       const ttsLang =
         LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-      speak(remoteTranslation, ttsLang);
+      await speak(remoteTranslation, ttsLang);
     }
   };
 
@@ -312,7 +389,7 @@ const VideoCallPage = () => {
 
           const ttsLang =
             LANGUAGES.find((l) => l.code === translateLang)?.ttsCode || "es-ES";
-          speak(translatedText, ttsLang);
+          await speak(translatedText, ttsLang);
         } catch (err) {
           setOutput("Error: " + err.message);
         }
@@ -376,7 +453,7 @@ const VideoCallPage = () => {
             autoPlay
             playsInline
             muted
-            className="w-[800px] h-[540px] border-2 border-blue-400 rounded-xl shadow-lg object-cover"
+            className="w-[520px] h-[350px] border-2 border-blue-400 rounded-xl shadow-lg object-cover"
           />
           {/* Mic status badge */}
           <div className="absolute top-2 left-2">
@@ -427,7 +504,7 @@ const VideoCallPage = () => {
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="w-[800px] h-[540px] border-2 border-green-400 rounded-xl shadow-lg object-cover"
+            className="w-[520px] h-[350px] border-2 border-green-400 rounded-xl shadow-lg object-cover"
           />
           {/* Remote mic status badge */}
           <div className="absolute top-2 left-2">
