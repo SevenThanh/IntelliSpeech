@@ -1,3 +1,6 @@
+
+<img width="500" height="500" alt="Screenshot 2025-08-20 at 10 50 43 AM" src="https://github.com/user-attachments/assets/0c900a8f-66c1-45b9-9d9a-12067ab9b266" />
+
 # 🎙️ IntelliSpeech
 IntelliSpeech is a real‑time video calling app with AI speech‑to‑speech translation and natural voice synthesis. It lets participants speak in their own language while hearing each other in lifelike, translated voices—without leaving the browser.
 
